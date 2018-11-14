@@ -15,7 +15,7 @@ To create the image `bbinet/reprepro`, execute the following command in the
     docker build -t bbinet/reprepro .
 
 You can now push the new image to the public registry:
-    
+
     docker push bbinet/reprepro
 
 
@@ -26,18 +26,19 @@ To configure your reprepro container, you need to provide a read-only `/config`
 volume that should contain 4 files:
 
   - `/config/apt-authorized_keys`: ssh authorized_keys file for the apt user
-    which should be used when running `apt-get` commands.
+    which should be used when running `apt-get` commands (each key must end with
+    a line feed).
     Should be chown root:root and chmod 644.
   - `/config/reprepro-authorized_keys`: ssh authorized_keys file for the
     reprepro user which should be used to upload debian packages with the
-    `dput` command.
+    `dput` command (each key must end with a line feed).
     Should be chown root:root and chmod 644.
   - `/config/reprepro_pub.gpg`: gpg public key to be used to sign debian
     packages.
-    Should be chown 600:root and chmod 600.
+    Should be chown 600:600 and chmod 600.
   - `/config/reprepro_sec.gpg`: gpg private key to be used to sign debian
     packages.
-    Should be chown 600:root and chmod 600.
+    Should be chown 600:600 and chmod 600.
 
 You also need to provide a read-write `/data` volume, which will be used to
 write the debian packages reprepro database, and the `.gnupg/` directory for
@@ -53,6 +54,23 @@ provide your own debian reprepro setup in `/data/debian/`.
 Then, when starting your reprepro container, you will want to bind ports `22`
 from the reprepro container to a host external port, so that it is accessible
 from `dput` (upload packages) and `apt-get` (download packages) through ssh.
+
+Extra notes from Jannis:
+
+Adapting run.sh to start sshd with debug options (-d, -dd or -ddd) may be help-
+ful but causes the container to crash at some point.
+
+Generating gpg keys:
+https://help.github.com/articles/generating-a-new-gpg-key/
+
+The entry SignWith in /data/debian/conf/distributions is not set correctly auto-
+matically. Retrieve the key id like this and update manually:
+
+docker exec -ti reprepro /bin/bash
+su - reprepro
+export GNUPGHOME="/data/.gnupg"
+gpg --list-secret-keys --keyid-format LONG
+
 
 For example:
 
