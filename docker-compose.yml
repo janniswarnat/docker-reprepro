@@ -8,7 +8,6 @@ services:
     volumes:
       - "./volumes/data:/data"
       - "./volumes/config:/config:ro"
-#      - "./volumes/ssh_host_dsa_key:/etc/ssh/ssh_host_dsa_key"
 #      - "./volumes/sshd_config:/sshd_config"
 #      - "./volumes/run.sh:/run.sh"
     environment:
