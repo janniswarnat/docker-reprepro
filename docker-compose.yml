@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  reprepro:
+    image: bbinet/reprepro:latest
+    container_name: reprepro
+    ports:
+     - "23:22"
+    volumes:
+      - "./volumes/data:/data"
+      - "./volumes/config:/config:ro"
+#      - "./volumes/ssh_host_dsa_key:/etc/ssh/ssh_host_dsa_key"
+#      - "./volumes/sshd_config:/sshd_config"
+#      - "./volumes/run.sh:/run.sh"
+    environment:
+      RPP_DISTRIBUTIONS: sdev;sprod
+      RPP_CODENAME_sdev: stretch-dev
+      RPP_CODENAME_sprod: stretch-prod
+      RPP_ARCHITECTURES_sdev: "amd64 armhf source"
+      RPP_ARCHITECTURES_sprod: "amd64 armhf source"
+      RPP_INCOMINGS: in_stretch
+      RPP_ALLOW_in_stretch: stable>stretch-dev
