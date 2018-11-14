@@ -55,23 +55,6 @@ Then, when starting your reprepro container, you will want to bind ports `22`
 from the reprepro container to a host external port, so that it is accessible
 from `dput` (upload packages) and `apt-get` (download packages) through ssh.
 
-Extra notes from Jannis:
-
-Adapting run.sh to start sshd with debug options (-d, -dd or -ddd) may be help-
-ful but causes the container to crash at some point.
-
-Generating gpg keys:
-https://help.github.com/articles/generating-a-new-gpg-key/
-
-The entry SignWith in /data/debian/conf/distributions is not set correctly auto-
-matically. Retrieve the key id like this and update manually:
-
-docker exec -ti reprepro /bin/bash
-su - reprepro
-export GNUPGHOME="/data/.gnupg"
-gpg --list-secret-keys --keyid-format LONG
-
-
 For example:
 
     $ docker pull bbinet/reprepro
@@ -93,6 +76,28 @@ For example:
         -e RPP_ALLOW_in_jessie="stable>jessie-dev" \
         -p 22:22 \
         bbinet/reprepro
+
+Extra notes from Jannis
+-----
+
+Adapting `run.sh` to start `sshd` with debug options (`-d, -dd or -ddd`) may be helpful but causes the container to crash at some point.
+
+Generating gpg keys:
+https://help.github.com/articles/generating-a-new-gpg-key/
+
+Import on client e.g. like this:
+ 
+    apt-key add /home/pi/public_key_no_pass.txt
+
+The entry `SignWith` in `/data/debian/conf/distributions` is not set correctly automatically. Retrieve the key id like this and update manually:
+
+    docker exec -ti reprepro /bin/bash
+    su - reprepro
+    export GNUPGHOME="/data/.gnupg"
+    gpg --list-secret-keys --keyid-format LONG
+
+
+
 
 Usage
 -----
@@ -122,3 +127,7 @@ Here is how `.dput.cf` and `sources.list` can look like:
 `sources.list`:
 
     deb ssh://apt@<reprepro_ip_address>/data/debian jessie-dev main
+    
+E.g for Raspberry Pi:
+
+    echo "deb ssh://apt@10.223.117.26:23/data/debian stretch-prod main" > /etc/apt/sources.list.d/monica.list
