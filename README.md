@@ -131,3 +131,7 @@ Here is how `.dput.cf` and `sources.list` can look like:
 E.g for Raspberry Pi:
 
     echo "deb ssh://apt@10.223.117.26:23/data/debian stretch-prod main" > /etc/apt/sources.list.d/monica.list
+
+Or after nginx has been set up:
+
+    echo "deb http://10.223.117.26:8080/ stretch-prod main" > /etc/apt/sources.list.d/monica.list
