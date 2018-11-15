@@ -6,8 +6,8 @@ services:
     ports:
      - "23:22"
     volumes:
-      - "./volumes/data:/data"
-      - "./volumes/config:/config:ro"
+      - "./volumes/reprepro/data:/data"
+      - "./volumes/reprepro/config:/config:ro"
 #      - "./volumes/sshd_config:/sshd_config"
 #      - "./volumes/run.sh:/run.sh"
     environment:
@@ -18,3 +18,11 @@ services:
       RPP_ARCHITECTURES_sprod: "amd64 armhf source"
       RPP_INCOMINGS: in_stretch
       RPP_ALLOW_in_stretch: stable>stretch-dev
+  nginx:
+    image: nginx:1.15
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - "./volumes/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "./volumes/reprepro/data/debian:/debian"
